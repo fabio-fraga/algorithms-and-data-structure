@@ -103,7 +103,7 @@ export function AddRouterForm({ setRouters, ...props }: AddRouterFormProps) {
     setFormData({
       name: '',
       ip_address: '',
-      mask: '',
+      mask: formData.mask,
       hosts: []
     })
 
@@ -176,7 +176,7 @@ export function AddRouterForm({ setRouters, ...props }: AddRouterFormProps) {
       </div>
       {error && <p className="text-red-500 text-xs">{error}</p>}
       {success && <p className="text-green-500 text-xs">{success}</p>}
-      <Button type="submit">Salvar</Button>
+      <Button type="submit" disabled={success ? true : false}>Salvar</Button>
     </form>
   )
 }
