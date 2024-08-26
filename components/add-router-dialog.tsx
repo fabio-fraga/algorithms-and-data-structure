@@ -26,7 +26,7 @@ import { AddRouterForm } from './add-router-form'
 import { RouterDevice } from '@/types'
 
 type AddRouterDialogProps = {
-  setRouters: React.Dispatch<React.SetStateAction<RouterDevice[]>>;
+  setRouters: React.Dispatch<React.SetStateAction<RouterDevice[]>>
 }
 
 export function AddRouterDialog({ setRouters }: AddRouterDialogProps) {

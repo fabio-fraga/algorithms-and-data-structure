@@ -26,8 +26,8 @@ import { AddHostForm } from './add-host-form'
 import { HostDevice } from '@/types'
 
 type AddHostDialogProps = {
-  setHosts: React.Dispatch<React.SetStateAction<HostDevice[]>>;
-  routerIndex: number;
+  setHosts: React.Dispatch<React.SetStateAction<HostDevice[]>>
+  routerIndex: number
 }
 
 export function AddHostDialog({ setHosts, routerIndex }: AddHostDialogProps) {

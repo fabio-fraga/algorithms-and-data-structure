@@ -9,73 +9,73 @@ import { RouterDevice } from '@/types'
 import { useRouter } from 'next/navigation'
 
 type AddRouterFormProps = {
-  className?: string;
+  className?: string
 }
 
 export function PingForm({ ...props }: AddRouterFormProps) {
-  const router = useRouter();
+  const router = useRouter()
 
   const [formData, setFormData] = useState({
     ip_address: '',
-  });
+  })
 
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
 
   function handleSubmit(e: FormEvent) {
-    e.preventDefault();    
+    e.preventDefault()    
 
     if (!formData.ip_address) {
-      setError('Preencha todos os campos.');
+      setError('Preencha todos os campos.')
 
-      return;
+      return
     }
 
-    const ipv4Pattern = /^(((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))\.){3}((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))$/;
+    const ipv4Pattern = /^(((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))\.){3}((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))$/
 
     if (!ipv4Pattern.test(formData.ip_address)) {
-      setError('Endereço IPV4 inválido');
+      setError('Endereço IPV4 inválido')
 
-      return;
+      return
     }
 
     if (formData.ip_address.split('.')[3] == '0') {
-      setError('Endereço IPV4 inválido');
+      setError('Endereço IPV4 inválido')
 
-      return;
+      return
     }
 
-    const routers = JSON.parse(localStorage.getItem('routers') as string);
+    const routers = JSON.parse(localStorage.getItem('routers') as string)
 
     if (!routers.some((router: RouterDevice) => {
       if (router.ip_address == formData.ip_address) {
-        return true;
+        return true
       }
     
       if (router.hosts.some((host) => host.ip_address == formData.ip_address)) {
-        return true;
+        return true
       }
     
-      return false;
+      return false
     })) {
-      setError('Destino inalcançável.');
+      setError('Destino inalcançável.')
     
-      return;
+      return
     }
 
-    setError('');
+    setError('')
 
     setFormData({
       ip_address: '',
-    });
+    })
 
-    setSuccess('Ping disparado com sucesso! Preparando visualização...');
+    setSuccess('Ping disparado com sucesso! Preparando visualização...')
 
     setTimeout(() => {
       setSuccess('')
 
       router.push(`/dashboard/${formData.ip_address}`)
-    }, 3000);
+    }, 3000)
   }
 
   return (
@@ -93,8 +93,8 @@ export function PingForm({ ...props }: AddRouterFormProps) {
           value={formData.ip_address}
           placeholder="192.168.0.1"
           onChange={(e) => {
-            setFormData({ ...formData, ip_address: e.target.value });
-            setError('');
+            setFormData({ ...formData, ip_address: e.target.value })
+            setError('')
           }}
         />
       </div>

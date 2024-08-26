@@ -1,17 +1,21 @@
 'use client'
 
-import { AddHostDialog } from "@/components/add-host-dialog";
-import { PingDialog } from "@/components/ping-dialog";
+import { AddHostDialog } from "@/components/add-host-dialog"
+import { PingDialog } from "@/components/ping-dialog"
 import { HostDevice, RouterDevice } from "@/types"
-import { ArrowLeft, Delete, MonitorSmartphone } from 'lucide-react';
-import Link from "next/link";
-import { useState } from "react";
+import { ArrowLeft, Delete, MonitorSmartphone } from 'lucide-react'
+import Link from "next/link"
+import { useState } from "react"
 
 export default function RouterPage({ params }: { params: { slug: string[] }}) {
   const routers = JSON.parse(localStorage.getItem('routers') as string) as RouterDevice[]
   const router = routers[parseInt(params.slug[0])]
 
   function removeHost(index: number) {
+    if (!confirm('Tem certeza? Essa ação não poderá ser desfeita.')) {
+      return
+    }
+
     const hostsAfterRemoveItem = [...router.hosts.slice(0, index), ...router.hosts.slice(index + 1)]
 
     router.hosts = hostsAfterRemoveItem
@@ -23,7 +27,7 @@ export default function RouterPage({ params }: { params: { slug: string[] }}) {
     setHosts(router.hosts)
   }
 
-  const [hosts, setHosts] = useState<HostDevice[]>(router.hosts as HostDevice[]);
+  const [hosts, setHosts] = useState<HostDevice[]>(router.hosts as HostDevice[])
 
   return (
     <div className="flex flex-col justify-center items-center w-full relative">

@@ -1,13 +1,18 @@
-'use client';
+'use client'
 
-import { AddRouterDialog } from '@/components/add-router-dialog';
-import { RouterDevice } from '@/types';
-import { Delete, Router } from 'lucide-react';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { AddRouterDialog } from '@/components/add-router-dialog'
+import { PingDialog } from '@/components/ping-dialog'
+import { RouterDevice } from '@/types'
+import { Delete, Router } from 'lucide-react'
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
 export default function Dashboard({ params }: { params?: { slug: string[] } }) {
   function removeRouter(index: number) {
+    if (!confirm('Tem certeza? Essa ação não poderá ser desfeita.')) {
+      return
+    }
+
     const routersAfterRemoveItem = [...routers.slice(0, index), ...routers.slice(index + 1)]
 
     localStorage.setItem('routers', JSON.stringify(routersAfterRemoveItem))
@@ -15,15 +20,15 @@ export default function Dashboard({ params }: { params?: { slug: string[] } }) {
     setRouters(routersAfterRemoveItem)
   }
 
-  const [routers, setRouters] = useState<RouterDevice[]>([]);
+  const [routers, setRouters] = useState<RouterDevice[]>([])
 
   useEffect(() => {
-    localStorage.getItem('routers') || localStorage.setItem('routers', '[]');
+    localStorage.getItem('routers') || localStorage.setItem('routers', '[]')
 
-    const routers = JSON.parse(localStorage.getItem('routers') as string);
+    const routers = JSON.parse(localStorage.getItem('routers') as string)
 
-    setRouters(routers);
-  }, []);
+    setRouters(routers)
+  }, [])
 
   return (
     <div className="flex flex-col justify-center items-center w-full">
@@ -41,7 +46,7 @@ export default function Dashboard({ params }: { params?: { slug: string[] } }) {
           </div>
           :
           routers.map((router, index) => (
-            <div key={index} className="relative">
+            <div key={index} className="relative flex flex-col justify-center">
               <button
                 className="absolute top-0 right-0"
                 onClick={() => removeRouter(index)}
@@ -58,6 +63,7 @@ export default function Dashboard({ params }: { params?: { slug: string[] } }) {
                   <p className="text-muted-foreground text-sm text-center">Máscara: {router.mask}</p>
                 </div>
               </Link>
+              <PingDialog />
             </div>
           ))
         }

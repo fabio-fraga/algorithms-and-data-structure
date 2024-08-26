@@ -8,83 +8,93 @@ import React, { FormEvent, useState, useEffect } from 'react'
 import { HostDevice, RouterDevice } from '@/types'
 
 type AddHostFormProps = {
-  className?: string;
-  setHosts: React.Dispatch<React.SetStateAction<HostDevice[]>>;
-  routerIndex: number;
+  className?: string
+  setHosts: React.Dispatch<React.SetStateAction<HostDevice[]>>
+  routerIndex: number
 }
 
 export function AddHostForm({ setHosts, routerIndex, ...props }: AddHostFormProps) {
-  const [routers, setRouters] = useState<RouterDevice[]>([]);
-  const [router, setRouter] = useState<RouterDevice | null>(null);
+  const [routers, setRouters] = useState<RouterDevice[]>([])
+  const [router, setRouter] = useState<RouterDevice | null>(null)
 
   const [formData, setFormData] = useState<HostDevice>({
     name: '',
     ip_address: '',
-  });
+  })
 
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
 
   useEffect(() => {
-    const storedRouters = JSON.parse(localStorage.getItem('routers') as string) as RouterDevice[];
-    setRouters(storedRouters);
-    setRouter(storedRouters[routerIndex]);
-  }, [routerIndex]);
+    const storedRouters = JSON.parse(localStorage.getItem('routers') as string) as RouterDevice[]
+    setRouters(storedRouters)
+    setRouter(storedRouters[routerIndex])
+  }, [routerIndex])
 
   useEffect(() => {
     if (success) {
       const timer = setTimeout(() => {
-        setSuccess('');
-      }, 5000);
+        setSuccess('')
+      }, 5000)
 
-      return () => clearTimeout(timer);
+      return () => clearTimeout(timer)
     }
-  }, [success]);
+  }, [success])
 
   function handleSubmit(e: FormEvent) {
-    e.preventDefault();
+    e.preventDefault()
 
     if (!formData.name || !formData.ip_address) {
-      setError('Preencha todos os campos.');
-      return;
+      setError('Preencha todos os campos.')
+      return
     }
 
-    const ipv4Pattern = /^(((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))\.){3}((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))$/;
+    const ipv4Pattern = /^(((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))\.){3}((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))$/
 
     if (!ipv4Pattern.test(formData.ip_address)) {
-      setError('Endereço IPV4 inválido');
-      return;
+      setError('Endereço IPV4 inválido')
+      return
+    }
+
+    if (formData.ip_address == router?.ip_address) {
+      setError('Endereço não pode ser igual ao gateway.')
+      return
     }
 
     if (formData.ip_address.split('.')[3] === '0') {
-      setError('Endereço IPV4 inválido');
-      return;
+      setError('Endereço IPV4 inválido')
+      return
     }
 
     if (router?.name === formData.name) {
-      setError('Já existe um dispositivo com esse nome.');
-      return;
+      setError('Já existe um dispositivo com esse nome.')
+      return
     }
 
     if (router?.ip_address.split('.').slice(0, 3).join('.') !== formData.ip_address.split('.').slice(0, 3).join('.')) {
-      setError('O dispositivo deve estar na mesma rede do roteador.');
-      return;
+      setError('O dispositivo deve estar na mesma rede do roteador.')
+      return
     }
 
-    const updatedRouters = [...routers];
-    updatedRouters[routerIndex].hosts.push(formData);
-    localStorage.setItem('routers', JSON.stringify(updatedRouters));
+    if (router?.hosts.some((host) => host.ip_address === formData.ip_address)) {
+      setError('Já existe um dispositivo com esse endereço.')
+      return
+    }
 
-    setHosts((prevHosts) => [...prevHosts, formData]);
-    setRouters(updatedRouters);
+    const updatedRouters = [...routers]
+    updatedRouters[routerIndex].hosts.push(formData)
+    localStorage.setItem('routers', JSON.stringify(updatedRouters))
 
-    setError('');
+    setHosts((prevHosts) => [...prevHosts, formData])
+    setRouters(updatedRouters)
+
+    setError('')
     setFormData({
       name: '',
       ip_address: '',
-    });
+    })
 
-    setSuccess('Host adicionado com sucesso!');
+    setSuccess('Host adicionado com sucesso!')
   }
 
   return (
@@ -102,8 +112,8 @@ export function AddHostForm({ setHosts, routerIndex, ...props }: AddHostFormProp
           value={formData.name}
           placeholder="Host X"
           onChange={(e) => {
-            setFormData({ ...formData, name: e.target.value });
-            setError('');
+            setFormData({ ...formData, name: e.target.value })
+            setError('')
           }}
         />
       </div>
@@ -128,8 +138,8 @@ export function AddHostForm({ setHosts, routerIndex, ...props }: AddHostFormProp
           value={formData.ip_address}
           placeholder="192.168.0.1"
           onChange={(e) => {
-            setFormData({ ...formData, ip_address: e.target.value });
-            setError('');
+            setFormData({ ...formData, ip_address: e.target.value })
+            setError('')
           }}
         />
       </div>

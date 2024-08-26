@@ -9,34 +9,34 @@ import React, { FormEvent, useState } from 'react'
 import { RouterDevice } from '@/types'
 
 const subnetMasks = [
-  { cidr: '/8', mask: '255.0.0.0' },
-  { cidr: '/9', mask: '255.128.0.0' },
-  { cidr: '/10', mask: '255.192.0.0' },
-  { cidr: '/11', mask: '255.224.0.0' },
-  { cidr: '/12', mask: '255.240.0.0' },
-  { cidr: '/13', mask: '255.248.0.0' },
-  { cidr: '/14', mask: '255.252.0.0' },
-  { cidr: '/15', mask: '255.254.0.0' },
-  { cidr: '/16', mask: '255.255.0.0' },
-  { cidr: '/17', mask: '255.255.128.0' },
-  { cidr: '/18', mask: '255.255.192.0' },
-  { cidr: '/19', mask: '255.255.224.0' },
-  { cidr: '/20', mask: '255.255.240.0' },
-  { cidr: '/21', mask: '255.255.248.0' },
-  { cidr: '/22', mask: '255.255.252.0' },
-  { cidr: '/23', mask: '255.255.254.0' },
+  // { cidr: '/8', mask: '255.0.0.0' },
+  // { cidr: '/9', mask: '255.128.0.0' },
+  // { cidr: '/10', mask: '255.192.0.0' },
+  // { cidr: '/11', mask: '255.224.0.0' },
+  // { cidr: '/12', mask: '255.240.0.0' },
+  // { cidr: '/13', mask: '255.248.0.0' },
+  // { cidr: '/14', mask: '255.252.0.0' },
+  // { cidr: '/15', mask: '255.254.0.0' },
+  // { cidr: '/16', mask: '255.255.0.0' },
+  // { cidr: '/17', mask: '255.255.128.0' },
+  // { cidr: '/18', mask: '255.255.192.0' },
+  // { cidr: '/19', mask: '255.255.224.0' },
+  // { cidr: '/20', mask: '255.255.240.0' },
+  // { cidr: '/21', mask: '255.255.248.0' },
+  // { cidr: '/22', mask: '255.255.252.0' },
+  // { cidr: '/23', mask: '255.255.254.0' },
   { cidr: '/24', mask: '255.255.255.0' },
-  { cidr: '/25', mask: '255.255.255.128' },
-  { cidr: '/26', mask: '255.255.255.192' },
-  { cidr: '/27', mask: '255.255.255.224' },
-  { cidr: '/28', mask: '255.255.255.240' },
-  { cidr: '/29', mask: '255.255.255.248' },
-  { cidr: '/30', mask: '255.255.255.252' }
-];
+  // { cidr: '/25', mask: '255.255.255.128' },
+  // { cidr: '/26', mask: '255.255.255.192' },
+  // { cidr: '/27', mask: '255.255.255.224' },
+  // { cidr: '/28', mask: '255.255.255.240' },
+  // { cidr: '/29', mask: '255.255.255.248' },
+  // { cidr: '/30', mask: '255.255.255.252' }
+]
 
 type AddRouterFormProps = {
-  className?: string;
-  setRouters: React.Dispatch<React.SetStateAction<RouterDevice[]>>;
+  className?: string
+  setRouters: React.Dispatch<React.SetStateAction<RouterDevice[]>>
 }
 
 export function AddRouterForm({ setRouters, ...props }: AddRouterFormProps) {
@@ -45,60 +45,60 @@ export function AddRouterForm({ setRouters, ...props }: AddRouterFormProps) {
     ip_address: '',
     mask: '',
     hosts: [],
-  });
+  })
 
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
 
   function handleSubmit(e: FormEvent) {
-    e.preventDefault();    
+    e.preventDefault()    
 
     if (!formData.name || !formData.ip_address || !formData.mask) {
-      setError('Preencha todos os campos.');
+      setError('Preencha todos os campos.')
 
-      return;
+      return
     }
 
-    const ipv4Pattern = /^(((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))\.){3}((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))$/;
+    const ipv4Pattern = /^(((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))\.){3}((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))$/
 
     if (!ipv4Pattern.test(formData.ip_address)) {
-      setError('Endereço IPV4 inválido');
+      setError('Endereço IPV4 inválido')
 
-      return;
+      return
     }
 
     if (formData.ip_address.split('.')[3] == '0') {
-      setError('Endereço IPV4 inválido');
+      setError('Endereço IPV4 inválido')
 
-      return;
+      return
     }
 
-    const routers = JSON.parse(localStorage.getItem('routers') as string);
+    const routers = JSON.parse(localStorage.getItem('routers') as string)
 
     if (routers.some((router: RouterDevice) => {
-      const network = router.ip_address.split('.').slice(0, 3).join('.');
+      const network = router.ip_address.split('.').slice(0, 3).join('.')
 
       return network === formData.ip_address.split('.').slice(0, 3).join('.')
     })) {
-      setError('Já existe um roteador com esse endereço de rede.');
+      setError('Já existe um roteador com esse endereço de rede.')
 
-      return;
+      return
     }
 
     if (routers.some((router: RouterDevice) => router.name === formData.name)) {
-      setError('Já existe um roteador com esse nome.');
+      setError('Já existe um roteador com esse nome.')
 
-      return;
+      return
     }
 
     localStorage.setItem('routers', JSON.stringify([
       ...JSON.parse(localStorage.getItem('routers') as string),
       formData,
-    ]));
+    ]))
 
-    setRouters((prevRouters) => [...prevRouters, formData]);
+    setRouters((prevRouters) => [...prevRouters, formData])
 
-    setError('');
+    setError('')
 
     setFormData({
       name: '',
@@ -107,11 +107,11 @@ export function AddRouterForm({ setRouters, ...props }: AddRouterFormProps) {
       hosts: []
     })
 
-    setSuccess('Roteador adicionado com sucesso!');
+    setSuccess('Roteador adicionado com sucesso!')
 
     setTimeout(() => {
       setSuccess('')
-    }, 5000);
+    }, 5000)
   }
 
   return (
@@ -129,8 +129,8 @@ export function AddRouterForm({ setRouters, ...props }: AddRouterFormProps) {
           value={formData.name}
           placeholder="Router X"
           onChange={(e) => {
-            setFormData({ ...formData, name: e.target.value });
-            setError('');
+            setFormData({ ...formData, name: e.target.value })
+            setError('')
           }}
         />
       </div>
@@ -144,8 +144,8 @@ export function AddRouterForm({ setRouters, ...props }: AddRouterFormProps) {
           value={formData.ip_address}
           placeholder="192.168.0.1"
           onChange={(e) => {
-            setFormData({ ...formData, ip_address: e.target.value });
-            setError('');
+            setFormData({ ...formData, ip_address: e.target.value })
+            setError('')
           }}
         />
       </div>
@@ -156,8 +156,8 @@ export function AddRouterForm({ setRouters, ...props }: AddRouterFormProps) {
         <Select
           name="mask"
           onValueChange={(value) => {
-            setFormData({ ...formData, mask: value });
-            setError('');
+            setFormData({ ...formData, mask: value })
+            setError('')
           }}
         >
           <SelectTrigger className="w-[280px]">
